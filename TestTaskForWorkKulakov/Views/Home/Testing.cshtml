@@ -1,0 +1,75 @@
+﻿@using TestTaskForWorkKulakov.Models
+@model Experiment
+@{
+    ViewBag.Title = "Испытание алгоритма";
+}
+
+<br /><br />
+<div class="container">
+    @using(Html.BeginForm("Testing", "Home", FormMethod.Post))
+    {
+        <div class="row">
+        <div class="form-inline">
+            <div class="col-lg-3">
+                <span class="text-left">@Html.LabelFor(Model => Model.NumberOfRounds, "Введите количество прогонов алгоритма  ")</span>
+            </div>
+            <div class="col-lg-3">
+                @Html.TextBoxFor(Model => Model.NumberOfRounds, new
+           {
+               @class = "form-control",
+               data_val_number = "Значением данного поля должно быть число"
+           })
+            </div>
+            <div class="col-lg-3">
+                <span> <strong class="text-danger">@Html.ValidationMessageFor(Model => Model.NumberOfRounds)</strong></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-inline">
+            <div class="col-lg-2">
+                <span class="text-left">@Html.LabelFor(Model => Model.ChangeYourOpinion, "Менять выбор двери?")</span>
+            </div>
+            <div class="col-lg-2">
+                @Html.CheckBoxFor(Model => Model.ChangeYourOpinion, new { @class = "checkbox-inline" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <button type="submit" class="btn btn-primary">Go!</button>    
+        </div>
+    </div>
+    }
+    <br /><hr /><br />
+    <div class="row">
+        <div class="col-lg-3">
+            <strong class="text-left">@Html.LabelFor(Model=>Model.RightChoice, "Количество выигрышей машины = ")</strong>
+        </div>
+        <div class="col-lg-1">
+            <strong class="text-success">@Html.DisplayFor(Model => Model.RightChoice)</strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <strong class="text-left">@Html.LabelFor(Model => Model.FalseChoice, "Количество выигрышей овцы = ")</strong>
+        </div>
+        <div class="col-lg-1">
+            <strong class="text-danger">@Html.DisplayFor(Model => Model.FalseChoice)</strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <strong class="text-left">@Html.LabelFor(Model => Model.ChanceOfWinning, "Процент выигрыша автомобиля = ")</strong>
+        </div>
+        <div class="col-lg-1">
+            <strong class="text-info">@Html.DisplayFor(Model => Model.ChanceOfWinning)</strong>
+        </div>
+    </div>
+    <br /><hr /><br />
+    <div class="row">
+        <div class="col-lg-6">
+            <strong class="text-danger">@Html.DisplayFor(Model=>Model.Error)</strong>
+        </div>
+    </div>
+</div>

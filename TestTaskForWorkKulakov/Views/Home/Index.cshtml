@@ -1,0 +1,147 @@
+﻿@using TestTaskForWorkKulakov.Models
+@model SelectionRound
+
+@{
+    ViewBag.Title = "Игра";
+}
+
+<br /><br />
+<div class="container">
+    <div class="row" style="height:150px;">
+        <div class="col-lg-4" id="divDoor1">
+            @Html.HiddenFor(p=>p.Door1)
+            <button class="btn btn-default" name="door" id="btnDoor1">Дверь №1</button>
+        </div>
+        <div class="col-lg-4" id="divDoor2">
+            @Html.HiddenFor(p => p.Door2)
+            <button class="btn btn-default" name="door" id="btnDoor2">Дверь №2</button>
+        </div>
+        <div class="col-lg-4" id="divDoor3">
+            @Html.HiddenFor(p => p.Door3)
+            <button class="btn btn-default" name="door" id="btnDoor3">Дверь №3</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12" id="message">
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var message; // перечисление того, что находится за дверьми (true - автомобиль, false - овца)
+    var selectedButtonId; // id выбранной игрком двери
+    var blockedDoorId; // id убранной ведущим двери
+    var blockedDiv; // для замены на картинку
+
+    // Функция для имитирования выбора ведущего
+    function randomDoor(min, max) {
+        var left;
+        var right;
+        do {
+            var rnd = min - 0.5 + Math.random() * (max - min + 1)
+            rnd = Math.round(rnd); // выбираем случайную дверь
+            blockedDoorId = "Door" + rnd;
+            blockedDiv = "#divDoor" + rnd;
+
+            if (blockedDoorId == selectedButtonId)
+                left = true;
+            else left = false;
+
+            if (document.getElementById(blockedDoorId).value == "True")
+                right = true;
+            else right = false;
+
+            //alert(rnd + "- rnd" + " | " + blockedDoorId + "- blockedDoorId" +
+            //    " | " + selectedButtonId + "- selectedButtonId" + " | "
+            //    + left + "- left" + " | " + right + "- right" + " | "
+            //    + document.getElementById(blockedDoorId).value + "- document.getElementById(blockedDoorId).value");
+
+        } while (left || right) /* цикл начнёт функционировать заново если:
+                                1. выбранное случайно id (blockedDoorId) будет равно id выбранному игроком;
+                                2. за дверью выбранной случайно окажется автомобиль (true) */
+    }
+
+    function checkOutValue() {
+        message = document.getElementById("Door1").value + " | " + document.getElementById("Door2").value
+            + " | " + document.getElementById("Door3").value;
+        alert(message);
+    }
+
+    // Данная функция обрабатывает ситуацию, когда игрок решает не выбирать другую дверь
+    function ChooseTrue() {
+        if (document.getElementById(selectedButtonId).value == "True") {
+            $("#message").append("<strong class='text-success text-center'>Вы выиграли автомобиль!</strong>");
+        } else {
+            $("#message").append("<strong class='text-danger text-center'>Вы выиграли овцу!</strong>");
+        }
+    }
+
+    // Данная функция обрабатывает ситуацию, когда игрок решает выбрать другую дверь
+    function ChooseFalse() {
+        if (document.getElementById(selectedButtonId).value == "True") {
+            $("#message").append("<strong class='text-danger text-center'>Вы выиграли овцу!</strong>");
+        } else {
+            $("#message").append("<strong class='text-success text-center'>Вы выиграли автомобиль!</strong>");
+        }
+    }
+
+    // Данная функция вызывает диалог о смене решения игрока
+    function Choose() {
+        if (confirm("Вы хотите выбрать другую дверь?")) {
+            ChooseFalse();
+        } else {
+            ChooseTrue();
+        }
+    }
+
+    // Заменяет оставшиеся кнопочки на картиночки
+    function LoadPictures() {
+        for (var i = 1; i < 4; i++) {
+            var checkPicture = "Door" + i;
+            var divPicture = "#divDoor" + i;
+
+            if (blockedDoorId != checkPicture) {
+                if (document.getElementById(checkPicture).value == "True") {
+
+                    $(divPicture).load("@Url.Action("GetAuto","Home")");
+
+                } else {
+
+                    $(divPicture).load("@Url.Action("GetSheep","Home")");
+
+                }
+
+            }
+        }
+    }
+
+    // MAIN
+    $(function () {
+        $("#btnDoor1").click(function () {
+            selectedButtonId = document.getElementById("Door1").id;
+            checkOutValue();
+            randomDoor(2, 3);
+            $(blockedDiv).load("@Url.Action("GetSheep","Home")");
+            Choose();
+            LoadPictures();
+        });
+
+        $("#btnDoor2").click(function () {
+            selectedButtonId = document.getElementById("Door2").id;
+            checkOutValue();
+            randomDoor(1, 3);
+            $(blockedDiv).load("@Url.Action("GetSheep","Home")");
+            Choose();
+            LoadPictures();
+        });
+
+        $("#btnDoor3").click(function () {
+            selectedButtonId = document.getElementById("Door3").id;
+            checkOutValue();
+            randomDoor(1, 2);
+            $(blockedDiv).load("@Url.Action("GetSheep","Home")");
+            Choose();
+            LoadPictures();
+        });
+    });
+</script>
